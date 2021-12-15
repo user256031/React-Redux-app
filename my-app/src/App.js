@@ -1,8 +1,9 @@
 // noinspection ES6CheckImport
 import React, {Component} from "react";
-import './App.css';
+import s from './App.module.css';
+
 import NavBar from "./components/NavBar/NavBar";
-import {Route} from "react-router";
+import {Navigate, Route} from "react-router";
 import {BrowserRouter, Routes} from 'react-router-dom'
 import News from "./components/News/News";
 import Music from "./components/Music/Music";
@@ -20,22 +21,30 @@ const ProfileParamsContainer = React.lazy(() => import('./components/Profile/Pro
 
 
 class App extends Component {
-
+    catchAllUnhandleErrors = (promiseRejectionEvent) =>{
+        alert(promiseRejectionEvent);
+    }
     componentDidMount() {
         this.props.initializeApp();
+        window.addEventListener("unhandledrejection", this.catchAllUnhandleErrors);
+    }
+    componentWillUnmount() {
+        window.removeEventListener("unhandledrejection", this.catchAllUnhandleErrors);
     }
 
     render() {
         if (!this.props.initialized) {
             return <Preloader/>
         }
-debugger
+
         return (
-            <div className='app-wrapper'>
+            <div className={s.app_wrapper}>
                 <HeaderContainer/>
                 <NavBar store={this.props.store}/>
-                <div className='app-wrapper-content'>
+                <div className={s.app_wrapper_content}>
                     <Routes>
+                        <Route exact path='/'
+                               element={<Navigate to={"/profile/0"}/>}/>
                         <Route path='/login' element={
                             <React.Suspense fallback={<Preloader/>}>
                                 <Login/>
@@ -59,12 +68,11 @@ debugger
                         <Route path='/news' element={<News/>}/>
                         <Route path='/music' element={<Music/>}/>
                         <Route path='/setting' element={<Setting/>}/>
+                        <Route path='*' element={<div>404 NOT FOUND</div>}/>
                     </Routes>
                 </div>
             </div>
-
         );
-
     }
 }
 

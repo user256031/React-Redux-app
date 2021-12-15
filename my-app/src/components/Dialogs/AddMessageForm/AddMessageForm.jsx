@@ -1,4 +1,4 @@
-import {Field, reduxForm} from "redux-form";
+import {Field, reduxForm, reset} from "redux-form";
 import React from "react";
 import {maxLengthCreator, required} from "../../utilis/validator/validator";
 import {Textarea} from "../../common/FormsControls/FormsControls";
@@ -14,7 +14,7 @@ const AddMessageForm = (props) => {
                        name="newMessageText" placeholder="Enter your message"/>
             </div>
             <div>
-                <button>Send</button>
+                <button onClick={reset}>Send</button>
             </div>
         </form>
     )
